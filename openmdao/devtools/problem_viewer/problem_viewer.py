@@ -7,7 +7,24 @@ import networkx as nx
 import shutil
 from collections import OrderedDict
 import base64
-import io 
+import sys
+if sys.version_info[0] > 2:
+    # py3k
+    pass
+else:
+    # py2
+    import codecs
+    import warnings
+    def open(file, mode='r', buffering=-1, encoding=None,
+             errors=None, newline=None, closefd=True, opener=None):
+        if newline is not None:
+            warnings.warn('newline is not supported in py2')
+        if not closefd:
+            warnings.warn('closefd is not supported in py2')
+        if opener is not None:
+            warnings.warn('opener is not supported in py2')
+        return codecs.open(filename=file, mode=mode, encoding=encoding,
+                    errors=errors, buffering=buffering)
 
 try:
     import h5py
@@ -223,7 +240,7 @@ def view_model(problem_or_filename, outfile='n2.html', show_browser=True, embedd
     style_dir = os.path.join(vis_dir, "style")
 
     #grab the libraries
-    with io.open(os.path.join(libs_dir, "awesomplete.js"), "r", encoding="utf8") as f:
+    with open(os.path.join(libs_dir, "awesomplete.js"), "r", encoding="utf8") as f:
         awesomplete = f.read()
     with open(os.path.join(libs_dir, "d3.v4.min.js"), "r") as f:
         d3 = f.read()
